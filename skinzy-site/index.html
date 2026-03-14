@@ -1762,17 +1762,17 @@ function generatePDF(){
   doc.setFontSize(7);
   doc.text('love the skin you are in',W-PAD,12,{align:'right'});
 
-  // Emoji + persona name
+  // Persona name (no emoji)
   doc.setFontSize(18);
   doc.setFont('helvetica','bolditalic');
   doc.setTextColor(200,169,110);
-  doc.text(d.personaEmoji+' '+d.personaName,PAD,26);
+  doc.text(d.personaName||'',PAD,26);
 
   // Skin type
   doc.setFontSize(9);
   doc.setFont('helvetica','normal');
   doc.setTextColor(180,140,90);
-  doc.text(d.skinType,PAD,34);
+  doc.text(d.skinType||'',PAD,34);
 
   y=54;
 
@@ -1780,9 +1780,9 @@ function generatePDF(){
   doc.setFontSize(10);
   doc.setFont('helvetica','italic');
   doc.setTextColor(80,45,18);
-  const descLines=doc.splitTextToSize(d.personaDesc,W-PAD*2);
+  const descLines=doc.splitTextToSize(d.personaDesc||'',W-PAD*2);
   doc.text(descLines,PAD,y);
-  y+=descLines.length*5+7;
+  y+=descLines.length*5+10;
 
   // Badges
   const badges=[d.depthLabel,d.budgetLabel,d.seasonLabel,d.date].filter(Boolean);
@@ -1791,14 +1791,14 @@ function generatePDF(){
   let bx=PAD;
   badges.forEach(function(b){
     const bw=doc.getTextWidth(b)+6;
-    if(bx+bw>W-PAD){bx=PAD;y+=8;}
+    if(bx+bw>W-PAD){bx=PAD;y+=9;}
     doc.setFillColor(44,26,14);
     doc.roundedRect(bx,y,bw,6,1.5,1.5,'F');
     doc.setTextColor(200,169,110);
     doc.text(b,bx+3,y+4.2);
     bx+=bw+3;
   });
-  y+=12;
+  y+=14;
 
   // Divider
   doc.setDrawColor(180,130,70);
@@ -1809,37 +1809,41 @@ function generatePDF(){
   // Helper: draw a product row
   function drawProd(item){
     if(y>H-40){doc.addPage();doc.setFillColor(245,237,226);doc.rect(0,0,W,H,'F');y=PAD;}
-    // Category label
+    // Category label (no emoji)
+    const catText=item.cat||'';
     doc.setFontSize(7.5);
     doc.setFont('helvetica','normal');
     doc.setTextColor(150,100,50);
-    doc.text(item.icon+' '+item.cat,PAD+2,y+4);
+    doc.text(catText,PAD+2,y+4);
     y+=7;
-    // Generic product name (as shown on screen)
-    const nameLines=doc.splitTextToSize(item.prodName,W-PAD*2-4);
+    // Product name
+    const nameLines=doc.splitTextToSize(item.prodName||'',W-PAD*2-4);
     doc.setFontSize(10);
     doc.setFont('helvetica','bold');
     doc.setTextColor(44,26,14);
     doc.text(nameLines,PAD+2,y);
-    y+=nameLines.length*5+1;
-    // Ingredients
+    y+=nameLines.length*5+2;
+    // Ingredients (no emoji)
     if(item.ing){
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica','normal');
-      doc.setTextColor(140,95,45);
-      doc.text('✦ '+item.ing,PAD+2,y);
-      y+=5;
+      const ingClean=item.ing.replace(/[^\x00-\x7F]/g,'').trim();
+      if(ingClean){
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica','normal');
+        doc.setTextColor(140,95,45);
+        doc.text(ingClean,PAD+2,y);
+        y+=5;
+      }
     }
     // Why
     if(item.why){
-      const whyLines=doc.splitTextToSize(item.why,W-PAD*2-4);
+      const whyLines=doc.splitTextToSize(item.why||'',W-PAD*2-4);
       doc.setFontSize(8.5);
       doc.setFont('helvetica','italic');
       doc.setTextColor(80,50,20);
       doc.text(whyLines,PAD+2,y);
       y+=whyLines.length*4.5+3;
     }
-    // Brand examples (same as drawer on screen)
+    // Brand examples
     if(item.examples&&item.examples.length>0){
       doc.setFontSize(7.5);
       doc.setFont('helvetica','bold');
@@ -1848,55 +1852,51 @@ function generatePDF(){
       y+=5;
       item.examples.forEach(function(e){
         if(y>H-20){doc.addPage();doc.setFillColor(245,237,226);doc.rect(0,0,W,H,'F');y=PAD;}
-        const exLine=e.brand+(e.desc?' — '+e.desc:'')+(e.price?' '+e.price:'');
-        const exLines=doc.splitTextToSize(exLine,W-PAD*2-8);
         doc.setFontSize(8);
-        doc.setFont('helvetica','normal');
-        doc.setTextColor(60,35,12);
-        doc.text('· ',PAD+2,y);
         doc.setFont('helvetica','bold');
-        doc.text(e.brand,PAD+6,y);
+        doc.setTextColor(60,35,12);
+        doc.text('- '+e.brand,PAD+6,y);
         if(e.price){doc.setTextColor(160,100,40);doc.text(e.price,W-PAD,y,{align:'right'});}
         y+=4.5;
         if(e.desc){
-          const dLines=doc.splitTextToSize(e.desc,W-PAD*2-12);
+          const dLines=doc.splitTextToSize(e.desc||'',W-PAD*2-12);
           doc.setFont('helvetica','normal');
           doc.setTextColor(100,65,30);
           doc.setFontSize(7.5);
           doc.text(dLines,PAD+6,y);
-          y+=dLines.length*4;
+          y+=dLines.length*4+1;
         }
         y+=1;
       });
       y+=2;
     }
-    // Light separator
+    // Separator
     doc.setDrawColor(220,200,175);
     doc.setLineWidth(0.15);
     doc.line(PAD,y,W-PAD,y);
     y+=6;
   }
 
-  // AM section header
+  // AM section
   doc.setFontSize(9);
   doc.setFont('helvetica','bold');
   doc.setTextColor(120,75,25);
-  doc.text('☀  '+(fi?'AAMURUTIINI':'MORNING ROUTINE'),PAD,y);
+  doc.text(fi?'AAMURUTIINI':'MORNING ROUTINE',PAD,y);
   y+=8;
   d.amProds.forEach(drawProd);
 
   y+=4;
+  if(y>H-40){doc.addPage();doc.setFillColor(245,237,226);doc.rect(0,0,W,H,'F');y=PAD;}
   doc.setDrawColor(180,130,70);
   doc.setLineWidth(0.25);
   doc.line(PAD,y,W-PAD,y);
   y+=8;
 
-  // PM section header
-  if(y>H-40){doc.addPage();doc.setFillColor(245,237,226);doc.rect(0,0,W,H,'F');y=PAD;}
+  // PM section
   doc.setFontSize(9);
   doc.setFont('helvetica','bold');
   doc.setTextColor(120,75,25);
-  doc.text('   '+(fi?'ILTARUTIINI':'EVENING ROUTINE'),PAD,y);
+  doc.text(fi?'ILTARUTIINI':'EVENING ROUTINE',PAD,y);
   y+=8;
   d.pmProds.forEach(drawProd);
 
@@ -1911,13 +1911,12 @@ function generatePDF(){
     doc.setFontSize(9);
     doc.setFont('helvetica','bold');
     doc.setTextColor(120,75,25);
-    const tipIcon=d.seasonIcons[d.season]||'🌿';
-    doc.text(tipIcon+'  '+(fi?'KAUSIKOHTAINEN VINKKI':'SEASONAL TIP'),PAD,y);
+    doc.text(fi?'KAUSIKOHTAINEN VINKKI':'SEASONAL TIP',PAD,y);
     y+=7;
+    const tipLines=doc.splitTextToSize(d.seasonalTip||'',W-PAD*2);
     doc.setFontSize(9);
     doc.setFont('helvetica','normal');
     doc.setTextColor(70,40,15);
-    const tipLines=doc.splitTextToSize(d.seasonalTip.replace(/^[^\s]+\s/,''),W-PAD*2);
     doc.text(tipLines,PAD,y);
     y+=tipLines.length*5+4;
   }
@@ -1932,6 +1931,7 @@ function generatePDF(){
 
   doc.save(fi?'Skinzy-ihonhoitorutiini.pdf':'Skinzy-skincare-routine.pdf');
   document.getElementById('pdf-preview-overlay').remove();
+}
 }
 
 async function sendConsultant(){
