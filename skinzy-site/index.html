@@ -1397,6 +1397,9 @@ function sharePersona(pk){
   const igLabel=mobile?'Instagram':(fi?'Instagram (kopioi teksti)':'Instagram (copies text)');
   const cols=mobile?'repeat(3,1fr)':'repeat(2,1fr)';
 
+  window._igShare=function(){eval(igAction);};
+wwindow._waShare=function(){window.open('https://wa.me/?text='+encTxt,'_blank');document.getElementById('share-sheet-overlay').remove();};
+wwindow._copyLink=function(){navigator.clipboard.writeText(url).then(()=>alert(fi?'Linkki kopioitu!':'Link copied!'));document.getElementById('share-sheet-overlay').remove();};
   overlay.innerHTML=`
     <div class="share-sheet" style="max-height:90vh;overflow-y:auto;">
 <div style="display:flex;justify-content:flex-end;margin-bottom:4px;">
