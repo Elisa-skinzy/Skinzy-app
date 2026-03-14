@@ -18,7 +18,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--deep);
 .hero.exit{opacity:0;transform:scale(1.05);pointer-events:none}
 .hero-inner{text-align:center;padding:32px 28px;max-width:500px;width:100%}
 .hero-logo{display:block;margin:0 auto 24px;width:260px;height:auto;animation:logoReveal 2s cubic-bezier(.25,.8,.25,1) both}
-@keyframes logoReveal{0%{opacity:0;transform:translateY(20px) scale(.94)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.hero-logo{width:160px;}.lang-bar{top:10px;right:10px;}}
+  @keyframes logoReveal{0%{opacity:0;transform:translateY(20px) scale(.94)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
 .hero-tagline{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;line-height:1.05;color:var(--deep);margin-bottom:16px;animation:fadeUp .9s .4s ease both;opacity:0;animation-fill-mode:both}
 .hero-tagline strong{font-style:italic;font-weight:600;color:var(--rose)}
 .hero-sub{font-size:14px;color:var(--bark);font-weight:300;line-height:1.75;max-width:380px;margin:0 auto 36px;animation:fadeUp .9s .6s ease both;opacity:0;animation-fill-mode:both}
