@@ -2219,7 +2219,7 @@ function retake(){
   const hero=document.getElementById('hero');
   hero.style.display='flex';hero.classList.remove('exit');
 }
-  setLang('fi');
+  window.addEventListener('load', function(){ setLang('fi'); });
 </script>
 </body>
 </html>
