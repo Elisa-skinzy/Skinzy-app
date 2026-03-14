@@ -904,13 +904,13 @@ function setLang(l){
   const bs=document.getElementById('btn-start-el'); if(bs) bs.textContent=x.btn_start;
   const backBtn=document.getElementById('btn-back');
   if(backBtn) backBtn.textContent='← '+x.btn_back_lbl;
-  document.getElementById('sb-done-badge').textContent=x.sb_done;
-  document.getElementById('sb-title').innerHTML=x.sb_title;
-  document.getElementById('sb-desc').textContent=x.sb_desc;
-  document.getElementById('sbc1').textContent=x.sbc1;
-  document.getElementById('sbc2').textContent=x.sbc2;
-  document.getElementById('sbc3').textContent=x.sbc3;
-  document.getElementById('btn-part2').textContent=x.btn_part2;
+ const sbd=document.getElementById('sb-done-badge'); if(sbd) sbd.textContent=x.sb_done;
+const sbt=document.getElementById('sb-title'); if(sbt) sbt.innerHTML=x.sb_title;
+const sbdesc=document.getElementById('sb-desc'); if(sbdesc) sbdesc.textContent=x.sb_desc;
+const sbc1=document.getElementById('sbc1'); if(sbc1) sbc1.textContent=x.sbc1;
+const sbc2=document.getElementById('sbc2'); if(sbc2) sbc2.textContent=x.sbc2;
+const sbc3=document.getElementById('sbc3'); if(sbc3) sbc3.textContent=x.sbc3;
+const bp2=document.getElementById('btn-part2'); if(bp2) bp2.textContent=x.btn_part2;
   if(!document.getElementById('quiz').classList.contains('hide')) renderQ();
   // If results page is visible, re-render in the new language
   const resultsEl=document.getElementById('results');
